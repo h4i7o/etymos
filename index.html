@@ -1,0 +1,388 @@
+<title>シス単 語源マップ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+/* Layout: glass sidebar (index) + glass reading pane; morpheme family unfolds under the word card */
+:root{
+  --bg:#eef0f6;
+  --blob1:#b9c8ff; --blob2:#f5c6e4; --blob3:#bfeee2;
+  --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.78);
+  --stroke:rgba(255,255,255,.75); --hair:rgba(28,32,52,.09);
+  --fg:#14161f; --fg2:#4a4f63; --fg3:#7d8296;
+  --pre:#2f6bff; --pre-bg:rgba(47,107,255,.10);
+  --stem:#7a3cf0; --stem-bg:rgba(122,60,240,.10);
+  --suf:#0b9a7a; --suf-bg:rgba(11,154,122,.11);
+  --accent:#2f6bff;
+  --h:#0b9a7a; --m:#c07a00; --l:#c2415a;
+  --shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 20px 50px -24px rgba(30,40,90,.28);
+  --f-disp:"Geist","Noto Sans JP",-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;
+  --f-body:"Geist","Noto Sans JP",-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r-lg:24px; --r-md:16px; --r-sm:11px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b0c12; --blob1:#22307a; --blob2:#5a1f4f; --blob3:#0f4a40;
+  --glass:rgba(28,30,42,.55); --glass-strong:rgba(36,38,52,.78);
+  --stroke:rgba(255,255,255,.09); --hair:rgba(255,255,255,.08);
+  --fg:#f2f3f8; --fg2:#b4b8c9; --fg3:#7f849a;
+  --pre:#7aa2ff; --pre-bg:rgba(122,162,255,.14);
+  --stem:#b391ff; --stem-bg:rgba(179,145,255,.14);
+  --suf:#4fd6b4; --suf-bg:rgba(79,214,180,.13);
+  --accent:#7aa2ff; --h:#4fd6b4; --m:#f0b34a; --l:#ff7d93;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 24px 60px -24px rgba(0,0,0,.7);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b0c12; --blob1:#22307a; --blob2:#5a1f4f; --blob3:#0f4a40;
+  --glass:rgba(28,30,42,.55); --glass-strong:rgba(36,38,52,.78);
+  --stroke:rgba(255,255,255,.09); --hair:rgba(255,255,255,.08);
+  --fg:#f2f3f8; --fg2:#b4b8c9; --fg3:#7f849a;
+  --pre:#7aa2ff; --pre-bg:rgba(122,162,255,.14);
+  --stem:#b391ff; --stem-bg:rgba(179,145,255,.14);
+  --suf:#4fd6b4; --suf-bg:rgba(79,214,180,.13);
+  --accent:#7aa2ff; --h:#4fd6b4; --m:#f0b34a; --l:#ff7d93;
+  --shadow:0 1px 0 rgba(255,255,255,.05) inset, 0 24px 60px -24px rgba(0,0,0,.7);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(80px);opacity:.75}
+.aurora i:nth-child(1){width:46vw;height:46vw;left:-8vw;top:-10vw;background:var(--blob1)}
+.aurora i:nth-child(2){width:40vw;height:40vw;right:-10vw;top:12vh;background:var(--blob2)}
+.aurora i:nth-child(3){width:44vw;height:44vw;left:30vw;bottom:-18vw;background:var(--blob3)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--glass-strong)}
+
+.glass{background:var(--glass);border:1px solid var(--stroke);box-shadow:var(--shadow);
+  -webkit-backdrop-filter:blur(28px) saturate(170%);backdrop-filter:blur(28px) saturate(170%)}
+
+.shell{position:relative;z-index:1;max-width:1240px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:16px 40px;display:flex;flex-direction:column;gap:16px}
+
+/* header */
+header.top{position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:5;border-radius:20px;
+  display:flex;align-items:center;gap:16px;padding:10px 12px 10px 18px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand b{font-family:var(--f-disp);font-weight:650;font-size:17px;letter-spacing:-.02em}
+.brand span{font-family:var(--f-mono);font-size:11.5px;color:var(--fg3);letter-spacing:.04em}
+.search{flex:1 1 260px;position:relative;min-width:0}
+.search input{width:100%;height:38px;border-radius:12px;border:1px solid var(--hair);background:var(--glass-strong);
+  color:var(--fg);font:inherit;font-size:14.5px;padding:0 12px 0 36px;outline:none;transition:box-shadow .2s,border-color .2s}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%,transparent)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--fg3)}
+.seg{display:flex;padding:3px;border-radius:12px;background:var(--hair);gap:2px}
+.seg button{border:0;background:transparent;color:var(--fg2);font:inherit;font-size:13px;font-weight:500;
+  padding:6px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--glass-strong);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg button:focus-visible,.row:focus-visible,.chip:focus-visible,.part:focus-visible,.wchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* main grid */
+.main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px;align-items:start}
+aside.index{border-radius:var(--r-lg);position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px);
+  max-height:calc(100vh - 100px);display:flex;flex-direction:column;overflow:hidden}
+.idx-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 8px;
+  font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--fg3);font-weight:600}
+.idx-head em{font-style:normal;font-family:var(--f-mono);text-transform:none;letter-spacing:0}
+.list{overflow:auto;padding:0 8px 10px;overscroll-behavior:contain}
+.row{display:grid;grid-template-columns:42px minmax(0,1fr);gap:4px 8px;padding:9px 10px;border-radius:12px;cursor:pointer;
+  border:0;background:transparent;width:100%;text-align:left;color:inherit;font:inherit}
+.row:hover{background:var(--hair)}
+.row[aria-current="true"]{background:var(--glass-strong);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.row .n{font-family:var(--f-mono);font-size:11.5px;color:var(--fg3);padding-top:3px;font-variant-numeric:tabular-nums}
+.row .w{font-weight:600;font-size:15px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .s{grid-column:2;font-size:12.5px;color:var(--fg2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-4px}
+.row .forms{grid-column:2;font-family:var(--f-mono);font-size:11.5px;color:var(--fg3);margin-top:-4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.more{margin:6px 10px 4px;font-size:12.5px;color:var(--fg3)}
+
+/* reading pane */
+section.pane{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{border-radius:var(--r-lg);padding:28px 30px;min-width:0}
+.eyebrow{font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg3);font-weight:600;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.eyebrow .num{font-family:var(--f-mono);letter-spacing:.02em}
+h1.word{font-family:var(--f-disp);font-weight:650;font-size:clamp(40px,6vw,64px);letter-spacing:-.045em;
+  line-height:1.02;margin:6px 0 20px;text-wrap:balance;overflow-wrap:anywhere}
+
+.parts{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin-bottom:24px}
+.part{display:flex;flex-direction:column;gap:2px;padding:10px 14px 9px;border-radius:var(--r-md);
+  border:1px solid transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s,border-color .18s}
+.part .role{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;opacity:.85}
+.part .sf{font-family:var(--f-mono);font-size:19px;font-weight:500;letter-spacing:-.01em}
+.part .gl{font-size:12.5px;color:var(--fg2)}
+.part.prefix{background:var(--pre-bg);color:var(--pre)}
+.part.stem{background:var(--stem-bg);color:var(--stem)}
+.part.suffix{background:var(--suf-bg);color:var(--suf)}
+.part:hover{transform:translateY(-2px);box-shadow:0 10px 24px -14px currentColor}
+.part[aria-pressed="true"]{border-color:currentColor;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 18%,transparent)}
+.part.free{background:var(--hair);color:var(--fg2);cursor:default}
+.part.free:hover{transform:none;box-shadow:none}
+.plus{align-self:center;color:var(--fg3);font-family:var(--f-mono)}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px}
+.blk h3{font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--fg3);font-weight:600;margin:0 0 10px}
+ol.senses{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol.senses li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:6px;font-size:15px}
+ol.senses li b{font-family:var(--f-mono);font-weight:500;color:var(--fg3);font-size:12px;padding-top:3px}
+.etym{font-size:16px;line-height:1.85;max-width:62ch;margin:0}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:3px 9px 3px 7px;
+  border-radius:999px;background:var(--hair);letter-spacing:.02em;text-transform:none}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.badge.h{color:var(--h)} .badge.m{color:var(--m)} .badge.l{color:var(--l)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--hair);
+  background:var(--glass-strong);color:var(--fg);cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.off{cursor:default;color:var(--fg3);background:transparent}
+.chip.off:hover{border-color:var(--hair);color:var(--fg3)}
+.syn-ant{display:flex;flex-direction:column;gap:14px;margin-top:22px}
+.lbl{font-size:12px;color:var(--fg3);margin-bottom:6px}
+.hint{font-size:13px;color:var(--fg3);margin:-8px 0 20px}
+
+/* family panel */
+.family{border-radius:var(--r-lg);padding:24px 26px 26px;animation:rise .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{transform:translateY(8px)}to{transform:none}}
+.fam-head{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px}
+.fam-head h2{font-family:var(--f-disp);font-size:26px;letter-spacing:-.03em;margin:2px 0 0;font-weight:650;text-wrap:balance}
+.fam-image{font-size:15px;color:var(--fg2);margin:4px 0 18px;max-width:62ch}
+.kindtag{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;padding:3px 9px;border-radius:999px}
+.kindtag.prefix{background:var(--pre-bg);color:var(--pre)}
+.kindtag.stem{background:var(--stem-bg);color:var(--stem)}
+.kindtag.suffix{background:var(--suf-bg);color:var(--suf)}
+.close{border:0;background:var(--hair);color:var(--fg2);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;line-height:1}
+.mgroups{display:flex;flex-direction:column;gap:16px}
+.mg{border-top:1px solid var(--hair);padding-top:14px}
+.mg-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.mg-h .f{font-family:var(--f-mono);font-size:17px;font-weight:500}
+.mg-h .v{font-family:var(--f-mono);font-size:12px;color:var(--fg3)}
+.mg-h .g{font-size:13px;color:var(--fg2)}
+.mg-h .c{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--fg3);font-variant-numeric:tabular-nums}
+.mg.self .mg-h .f::after{content:"この語";font-family:var(--f-body);font-size:10.5px;margin-left:8px;padding:2px 7px;border-radius:999px;background:var(--hair);color:var(--fg2);vertical-align:2px}
+.prefix-c .f{color:var(--pre)} .stem-c .f{color:var(--stem)} .suffix-c .f{color:var(--suf)}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:6px}
+.wchip{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 11px;border-radius:12px;
+  border:1px solid var(--hair);background:var(--glass-strong);cursor:pointer;font:inherit;color:inherit;text-align:left;min-width:0}
+.wchip:hover{border-color:var(--accent)}
+.wchip[aria-current="true"]{border-color:currentColor;color:var(--accent)}
+.wchip b{font-size:14.5px;font-weight:600;letter-spacing:-.01em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wchip span{font-size:12px;color:var(--fg2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wchip mark{background:transparent;color:inherit;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:var(--mk,currentColor)}
+
+.empty{padding:40px 30px;color:var(--fg2)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--fg3);padding:0 6px}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.loading{padding:60px 30px;text-align:center;color:var(--fg3)}
+
+@media (max-width:900px){
+  .main{grid-template-columns:minmax(0,1fr)}
+  aside.index{position:relative;top:0;max-height:46vh}
+  .grid2{grid-template-columns:minmax(0,1fr);gap:22px}
+  .card{padding:22px 20px}
+  .family{padding:20px 18px}
+  header.top{top:calc(env(safe-area-inset-top,0px) + 6px)}
+}
+@media (max-width:520px){
+  .seg button{padding:6px 9px;font-size:12.5px}
+  .brand span{display:none}
+  .wgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<div class="shell">
+  <header class="top glass">
+    <div class="brand"><b>シス単 語源マップ</b><span>2027 words · 1313 morphemes</span></div>
+    <label class="search" for="q">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="単語・意味・語根で検索 (例: spect, 運ぶ, 102)" autocomplete="off">
+    </label>
+    <div class="seg" role="group" aria-label="表示">
+      <button id="m-word" data-mode="word" aria-pressed="true">単語</button>
+      <button id="m-prefix" data-mode="prefix" aria-pressed="false">接頭辞</button>
+      <button id="m-stem" data-mode="stem" aria-pressed="false">語幹</button>
+      <button id="m-suffix" data-mode="suffix" aria-pressed="false">接尾辞</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <aside class="index glass" aria-label="一覧">
+      <div class="idx-head"><span id="idx-title">単語</span><em id="idx-count"></em></div>
+      <div class="list" id="list"><div class="loading">読み込み中…</div></div>
+    </aside>
+    <section class="pane" id="pane">
+      <div class="card glass loading">データを読み込んでいます…</div>
+    </section>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--pre)"></i>接頭辞</span>
+    <span><i style="background:var(--stem)"></i>語幹</span>
+    <span><i style="background:var(--suf)"></i>接尾辞</span>
+    <span>語源の信頼度: <b class="badge h">定説</b> <b class="badge m">諸説・簡略</b> <b class="badge l">不詳・イメージ</b></span>
+  </div>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CONF={h:'定説',m:'諸説・簡略',l:'不詳・イメージ'};
+const KIND={prefix:'接頭辞',stem:'語幹',suffix:'接尾辞'};
+let L,W=new Map(),M=new Map(),C=new Map();
+const state={mode:'word',q:'',word:null,morph:null,ci:null};
+
+function short(s){return String(s||'').replace(/^【[^】]*】/,'').split(/[、;／/]/)[0].trim()}
+
+async function boot(){
+  try{
+    const r=await fetch('lexicon.json'); L=await r.json();
+  }catch(e){
+    $('#pane').innerHTML='<div class="card glass empty">データを読み込めませんでした。ページを再読み込みしてください。</div>';return;
+  }
+  L.words.forEach(w=>{w._s=(w.word+' '+w.senses.join(' ')+' '+w.parts.map(p=>p.surface+' '+p.gloss).join(' ')).toLowerCase();W.set(w.id,w)});
+  L.morphemes.forEach(m=>M.set(m.id,m));
+  L.coreImages.forEach(c=>{c._s=(c.label+' '+c.image+' '+c.morphemes.map(id=>{const m=M.get(id);return m?m.form+' '+(m.variants||[]).join(' ')+' '+m.gloss:''}).join(' ')).toLowerCase();C.set(c.id,c)});
+  let start=125;
+  const h=(location.hash||'').match(/^#w(\d+)$/); if(h&&W.has(+h[1])) start=+h[1];
+  try{const m=localStorage.getItem('sistan-mode'); if(m&&m!=='word') setMode(m,true)}catch(e){}
+  state.word=start;
+  renderList(); renderPane();
+}
+
+/* ---------- list ---------- */
+function renderList(){
+  const q=state.q.trim().toLowerCase(), el=$('#list');
+  let html='',n=0,total=0;
+  if(state.mode==='word'){
+    $('#idx-title').textContent='単語';
+    const num=/^\d+$/.test(q)?+q:null;
+    const res=[];
+    for(const w of L.words){
+      if(!q||(num!==null?w.id===num||String(w.id).startsWith(q):w._s.includes(q))) res.push(w);
+    }
+    if(q&&num===null) res.sort((a,b)=>rank(a,q)-rank(b,q)||a.id-b.id);
+    total=res.length;
+    for(const w of res.slice(0,400)){n++;
+      html+=`<button class="row" data-w="${w.id}" ${w.id===state.word?'aria-current="true"':''}><span class="n">${w.id}</span><span class="w">${esc(w.word)}</span><span class="s">${esc(short(w.senses[0]))}</span></button>`;}
+  }else{
+    $('#idx-title').textContent=KIND[state.mode]+'のコアイメージ';
+    const res=L.coreImages.filter(c=>c.kind===state.mode&&c.wordCount>0&&(!q||c._s.includes(q)))
+      .sort((a,b)=>(b.size>1)-(a.size>1)||b.wordCount-a.wordCount);
+    total=res.length;
+    for(const c of res.slice(0,400)){n++;
+      const forms=c.morphemes.map(id=>M.get(id)?.form).filter(Boolean).join(' · ');
+      html+=`<button class="row" data-ci="${esc(c.id)}" ${c.id===state.ci&&!state.word?'aria-current="true"':''}><span class="n">${c.wordCount}</span><span class="w">${esc(c.label)}</span><span class="forms">${esc(forms)}</span></button>`;}
+  }
+  if(!total) html='<div class="more">該当なし。綴りの一部や日本語の意味でも探せます。</div>';
+  else if(total>n) html+=`<div class="more">ほか ${total-n} 件。検索で絞り込めます。</div>`;
+  el.innerHTML=html;
+  $('#idx-count').textContent=total;
+}
+function rank(w,q){const x=w.word.toLowerCase(); return x===q?0:x.startsWith(q)?1:x.includes(q)?2:3}
+
+/* ---------- pane ---------- */
+function renderPane(){
+  const pane=$('#pane');
+  if(state.word){pane.innerHTML=wordCard(W.get(state.word))+(state.morph?family(M.get(state.morph).ci,state.morph):'');}
+  else if(state.ci){pane.innerHTML=family(state.ci,null,true);}
+}
+function wordCard(w){
+  const parts=w.parts.map((p,i)=>{
+    const plus=i?'<span class="plus" aria-hidden="true">+</span>':'';
+    if(!p.morpheme) return plus+`<div class="part free"><span class="role">${p.role==='stem'?'語(独立)':KIND[p.role]}</span><span class="sf">${esc(p.surface)}</span><span class="gl">${esc(p.gloss||'—')}</span></div>`;
+    return plus+`<button class="part ${p.role}" data-m="${esc(p.morpheme)}" aria-pressed="${state.morph===p.morpheme}"><span class="role">${KIND[p.role]}</span><span class="sf">${esc(p.surface)}</span><span class="gl">${esc(p.gloss)}</span></button>`;
+  }).join('');
+  const hasM=w.parts.some(p=>p.morpheme);
+  const chips=a=>a.length?a.map(x=>x.id?`<button class="chip" data-w="${x.id}">${esc(x.w)}</button>`:`<span class="chip off">${esc(x.w)}</span>`).join(''):'<span class="chip off">—</span>';
+  return `<article class="card glass">
+    <div class="eyebrow"><span class="num">No. ${w.id}</span><span class="badge ${w.conf}" title="語源の信頼度">${CONF[w.conf]}</span></div>
+    <h1 class="word">${esc(w.word)}</h1>
+    <div class="parts">${parts}</div>
+    ${hasM?'<p class="hint">パーツを押すと、同じ意味の接頭辞・語幹・接尾辞をもつ単語が下に並びます。</p>':''}
+    <div class="grid2">
+      <div class="blk"><h3>語源・成り立ち</h3><p class="etym">${esc(w.etym)}</p></div>
+      <div class="blk"><h3>意味</h3><ol class="senses">${w.senses.map((s,i)=>`<li><b>${i+1}</b><span>${esc(s)}</span></li>`).join('')}</ol>
+        <div class="syn-ant"><div><div class="lbl">同義語</div><div class="chips">${chips(w.syn)}</div></div>
+        <div><div class="lbl">対義語</div><div class="chips">${chips(w.ant)}</div></div></div>
+      </div>
+    </div>
+  </article>`;
+}
+function family(ciId,selfM,standalone){
+  const c=C.get(ciId); if(!c) return '';
+  const order=[...c.morphemes].sort((a,b)=>(b===selfM)-(a===selfM)||(M.get(b).wordIds.length-M.get(a).wordIds.length));
+  const groups=order.map(id=>{
+    const m=M.get(id); const vs=(m.variants||[]).filter(v=>v!==m.form);
+    const ws=m.wordIds.map(i=>W.get(i)).filter(Boolean);
+    return `<div class="mg ${m.kind}-c ${id===selfM?'self':''}">
+      <div class="mg-h"><span class="f">${esc(m.form)}</span>${vs.length?`<span class="v">${esc(vs.join(' '))}</span>`:''}<span class="g">${esc(m.gloss)}</span><span class="c">${ws.length}語</span></div>
+      <div class="wgrid">${ws.map(w=>`<button class="wchip" data-w="${w.id}" ${w.id===state.word?'aria-current="true"':''}><b>${hl(w,id)}</b><span>${esc(short(w.senses[0]))}</span></button>`).join('')}</div>
+    </div>`;}).join('');
+  const sub=c.size>1?`同じコアイメージの${KIND[c.kind]} ${c.size}種 · ${c.wordCount}語`:`${KIND[c.kind]} · ${c.wordCount}語`;
+  return `<section class="family glass" aria-label="同じコアイメージの単語">
+    <div class="fam-head"><div><div class="eyebrow"><span class="kindtag ${c.kind}">${KIND[c.kind]}</span><span>${esc(sub)}</span></div>
+      <h2>「${esc(c.label)}」</h2></div>
+      ${standalone?'':'<button class="close" data-close aria-label="閉じる">×</button>'}</div>
+    ${c.image?`<p class="fam-image">${esc(c.image)}</p>`:'<p class="fam-image"></p>'}
+    <div class="mgroups">${groups}</div>
+  </section>`;
+}
+function hl(w,mid){
+  const p=w.parts.find(p=>p.morpheme===mid); const word=w.word;
+  if(!p) return esc(word);
+  const s=p.surface.replace(/^-|-$/g,'').replace(/\(.*\)/,'').split('+').pop().split('-').pop().toLowerCase();
+  const i=s?word.toLowerCase().indexOf(s):-1;
+  if(i<0) return esc(word);
+  return esc(word.slice(0,i))+'<mark>'+esc(word.slice(i,i+s.length))+'</mark>'+esc(word.slice(i+s.length));
+}
+
+/* ---------- actions ---------- */
+function openWord(id,keepMorph){
+  state.word=id; if(!keepMorph) state.morph=null; state.ci=null;
+  try{history.replaceState(null,'','#w'+id)}catch(e){}
+  renderList(); renderPane();
+  const pane=$('#pane'); if(window.innerWidth<=900) pane.scrollIntoView({behavior:'smooth',block:'start'}); else window.scrollTo({top:0,behavior:'smooth'});
+}
+function setMode(m,silent){
+  state.mode=m;
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));
+  try{localStorage.setItem('sistan-mode',m)}catch(e){}
+  if(!silent){renderList();}
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button'); if(!t) return;
+  if(t.dataset.mode){setMode(t.dataset.mode);return}
+  if(t.dataset.close!==undefined){state.morph=null;renderPane();return}
+  if(t.dataset.m){
+    state.morph=state.morph===t.dataset.m?null:t.dataset.m; renderPane();
+    if(state.morph){const f=document.querySelector('.family'); f&&f.scrollIntoView({behavior:'smooth',block:'nearest'})}
+    return}
+  if(t.dataset.ci){state.ci=t.dataset.ci;state.word=null;state.morph=null;renderList();renderPane();
+    if(window.innerWidth<=900) $('#pane').scrollIntoView({behavior:'smooth',block:'start'});return}
+  if(t.dataset.w){
+    const id=+t.dataset.w;
+    const inFamily=!!t.closest('.family');
+    if(inFamily && state.word){
+      // keep the same family open on the new word when it shares the morpheme
+      const fam=t.closest('.family'); const keep=state.morph && W.get(id).parts.some(p=>p.morpheme&&M.get(p.morpheme).ci===M.get(state.morph).ci);
+      if(keep){const p=W.get(id).parts.find(p=>p.morpheme&&M.get(p.morpheme).ci===M.get(state.morph).ci); state.morph=p.morpheme; openWord(id,true); return}
+    }
+    openWord(id);
+  }
+});
+let tmr;
+$('#q').addEventListener('input',e=>{clearTimeout(tmr);tmr=setTimeout(()=>{state.q=e.target.value;renderList()},90)});
+$('#q').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){const f=document.querySelector('#list .row'); f&&f.click()}
+});
+window.addEventListener('hashchange',()=>{const h=location.hash.match(/^#w(\d+)$/); if(h&&W.has(+h[1])&&+h[1]!==state.word) openWord(+h[1])});
+boot();
+})();
+</script>
